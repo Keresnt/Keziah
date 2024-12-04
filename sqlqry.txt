@@ -1,0 +1,56 @@
+CREATE TABLE Categories (
+    CategoryID INT AUTO_INCREMENT PRIMARY KEY,
+    CategoryName VARCHAR(30) NOT NULL
+    );
+
+INSERT INTO Categories (CategoryName)
+VALUES ('Beverages'), ('Snacks'), ('Personal Care'), ('Household Items');
+
+CREATE TABLE Suppliers (
+    SupplierID INT AUTO_INCREMENT PRIMARY KEY,
+    SupplierName VARCHAR(60) NOT NULL,
+    ContactNumber VARCHAR(15),
+    Address TEXT
+);
+
+INSERT INTO Suppliers (SupplierName, ContactNumber, Address)
+VALUES 
+('San Miguel Corporation', '09171234567', 'Mandaluyong City'),
+('Nestle Philippines', '09281234567', 'Makati City'),
+('Unilever Philippines', '09391234567', 'Taguig City');
+
+
+CREATE TABLE Products (
+    ProductID INT AUTO_INCREMENT PRIMARY KEY,
+    ProductName VARCHAR(255) NOT NULL,
+    CategoryID INT, -- Foreign key to Categories
+    SupplierID INT, -- Foreign key to Suppliers
+    Price DECIMAL(10, 2) NOT NULL,
+    StockQuantity INT DEFAULT 0,
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID),
+    FOREIGN KEY (SupplierID) REFERENCES Suppliers(SupplierID)
+);
+
+INSERT INTO Products (ProductName, CategoryID, SupplierID, Price, StockQuantity)
+VALUES
+('Coke 1.5L', 1, 1, 50.00, 100),
+('Piattos Cheese', 2, 2, 25.00, 200),
+('Close-Up Toothpaste', 3, 3, 90.00, 50),
+('Tide Powder Detergent', 4, 3, 150.00, 80);
+
+CREATE TABLE InventoryTransactions (
+    TransactionID INT AUTO_INCREMENT PRIMARY KEY,
+    ProductID INT, -- Foreign key to Products
+    TransactionType ENUM('Restock', 'Sale', 'Return') NOT NULL,
+    Quantity INT NOT NULL,
+    TransactionDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+INSERT INTO InventoryTransactions (ProductID, TransactionType, Quantity)
+VALUES
+(1, 'Restock', 50),
+(2, 'Sale', 20),
+(3, 'Return', 5),
+(4, 'Restock', 30);
